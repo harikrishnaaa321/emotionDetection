@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expression Recognizer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-image: url('https://wallpapers.com/images/hd/emotions-background-vn9o5b13d84go3ei.jpg'); /* Add your custom background image URL here */
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        .container {
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.8); /* White with transparency */
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        h1 {
+            margin-top: 0;
+            color: #333; /* Dark text */
+        }
+
+        input[type="file"] {
+            display: block;
+            margin: 20px auto; /* Center file input */
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f9f9f9; /* Light gray */
+        }
+
+        button {
+            background-color: #4caf50; /* Green button */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #result {
+            margin-top: 20px;
+            text-align: center;
+            display: none; /* Initially hide the result */
+        }
+
+        #result img {
+            max-width: 100%; /* Ensure image fits within the container */
+            max-height: 300px; /* Adjust maximum height as needed */
+            margin-top: 20px; /* Space between image and other elements */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Expression Recognizer</h1>
+        <form id="upload-form" enctype="multipart/form-data" action="/predict" method="post">
+            <label for="image-upload" style="cursor: pointer;">Select an image</label>
+            <input type="file" name="image" id="image-upload">
+            <button type="submit">Predict</button>
+            <button type="button" onclick="cancel()">Cancel</button>
+        </form>
+        <div id="result">
+            <!-- Result image will be displayed here -->
+        </div>
+    </div>
+
+    <script>
+    function predict() {
+        var fileInput = document.getElementById('image-upload');
+        var file = fileInput.Files[0];
+
+        var formData = new FormData();
+        formData.append('image', file);
+
+        // Submit the form to the '/predict' route
+        fetch('/predict', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (response.redirected) {
+                window.location.href = response.url; // Redirect to the '/predict' route
+            } else {
+                // Handle response if needed
+                return response.text();
+            }
+        })
+        .then(data => {
+            // Handle data if needed
+            console.log(data);
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function cancel() {
+        document.getElementById('image-upload').value = '';
+        document.getElementById('result').style.display = 'none';
+    }
+</script>
+</body>
+</html>
+
+
